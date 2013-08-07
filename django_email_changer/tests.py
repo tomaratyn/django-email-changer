@@ -1,16 +1,15 @@
-"""
-This file demonstrates writing tests using the unittest module. These will pass
-when you run "manage.py test".
-
-Replace this with more appropriate tests for your application.
-"""
-
+from django.contrib.auth.models import User
 from django.test import TestCase
+from django_email_changer.models import UserEmailModification
 
 
-class SimpleTest(TestCase):
-    def test_basic_addition(self):
+class TestUserEmailModification(TestCase):
+
+    def test_default_security_code(self):
         """
-        Tests that 1 + 1 always equals 2.
+        Test that the security code is 32 characters long (a valid uuid)
         """
-        self.assertEqual(1 + 1, 2)
+        user_email = "user@example.org"
+        user = User.objects.create_user(user_email, user_email, "secert")
+        model = UserEmailModification.objects.create(user=user, new_email="something else")
+        self.assertEqual(32, len(model.security_code))
