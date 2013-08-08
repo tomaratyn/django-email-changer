@@ -1,4 +1,3 @@
-
 from string import translate
 from uuid import uuid4
 
