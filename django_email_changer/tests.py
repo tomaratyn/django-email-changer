@@ -50,7 +50,7 @@ class TestUserEmailUserModificationView(TestCase):
         form_data = {"new_email": "something@example.com",
                      "confirmed_email": "something@example.com",
                      "password": self.password, }
-        response = self.client.post(reverse("django_email_changer_change_view", self.urls),
+        response = self.client.post(reverse("django_email_changer_change_view"),
                                     form_data)
         self.assertEqual(302, response.status_code)
         self.assertEqual(dem_count+1, UserEmailModification.objects.count())
@@ -59,7 +59,7 @@ class TestUserEmailUserModificationView(TestCase):
         form_data = {"new_email": "something@example.com",
                      "confirmed_email": "something@example.com",
                      "password": self.password + "1", }
-        response = self.client.post(reverse("django_email_changer_change_view", self.urls),
+        response = self.client.post(reverse("django_email_changer_change_view"),
                                     form_data)
         self.assertEqual(200, response.status_code)
         self.assertEqual(dem_count, UserEmailModification.objects.count())
