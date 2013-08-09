@@ -1,3 +1,5 @@
+from mock import patch, Mock
+
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
@@ -7,7 +9,7 @@ from django_email_changer.models import UserEmailModification
 from django_email_changer import urls as email_changer_urls
 
 
-class TestUserEmailModification(TestCase):
+class TestUserEmailModificationModel(TestCase):
 
     def test_default_security_code(self):
         """
@@ -55,7 +57,10 @@ class TestUserEmailUserModificationView(TestCase):
                                              password=self.password)
         self.client.login(username="user", password=self.password)
 
-    def test_post(self):
+    @patch("django_email_changer.views.Thread")
+    def test_post(self, threading_Thread):
+        thread = Mock()
+        threading_Thread.return_value = thread
         dem_count = UserEmailModification.objects.count()
         form_data = {"new_email": "something@example.com",
                      "confirmed_email": "something@example.com",
@@ -64,6 +69,8 @@ class TestUserEmailUserModificationView(TestCase):
                                     form_data)
         self.assertEqual(302, response.status_code)
         self.assertEqual(dem_count+1, UserEmailModification.objects.count())
+        self.assertEqual(1, threading_Thread.call_count)
+        self.assertTrue("call.start()" in [str(call) for call in thread.method_calls])
 
         dem_count = UserEmailModification.objects.count()
         form_data = {"new_email": "something@example.com",
@@ -75,7 +82,7 @@ class TestUserEmailUserModificationView(TestCase):
         self.assertEqual(dem_count, UserEmailModification.objects.count())
 
 
-class TestNewEmailActivation(TestCase):
+class TestNewEmailActivationView(TestCase):
 
     urls = email_changer_urls
 
@@ -94,7 +101,7 @@ class TestNewEmailActivation(TestCase):
         response = self.client.get(reverse("django_change_email_activate_new_email",
                                            kwargs={"code": email_modification.security_code}))
 
-        self.assertEqual(200, response.status_code)
+        self.assertEqual(302, response.status_code)
         new_email = "user@changed.example.org"
         email_modification = UserEmailModification.objects.create(new_email=new_email,
                                                                   user=self.user)
