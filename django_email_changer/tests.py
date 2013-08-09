@@ -15,8 +15,18 @@ class TestUserEmailModification(TestCase):
         """
         user_email = "user@example.org"
         user = User.objects.create_user(user_email, user_email, "secert")
-        model = UserEmailModification.objects.create(user=user, new_email="something else")
-        self.assertEqual(32, len(model.security_code))
+        uem = UserEmailModification.objects.create(user=user, new_email="something else")
+        self.assertEqual(32, len(uem.security_code))
+
+    def test_activate_new_email(self):
+        user_email = "user@example.org"
+        new_email = "user@changed.example.org"
+        user = User.objects.create_user(user_email, user_email, "secret")
+        uem = UserEmailModification.objects.create(user=user, new_email=new_email)
+        uem.activate()
+        user = User.objects.get(id=user.id)
+        self.assertEqual(new_email, user.email)
+        self.assertIsNotNone(uem.date_change_accepted)
 
 
 class TestUserEmailModificationForm(TestCase):
@@ -63,3 +73,37 @@ class TestUserEmailUserModificationView(TestCase):
                                     form_data)
         self.assertEqual(200, response.status_code)
         self.assertEqual(dem_count, UserEmailModification.objects.count())
+
+
+class TestNewEmailActivation(TestCase):
+
+    urls = email_changer_urls
+
+    def setUp(self):
+        self.original_email = "user@original.example.org"
+        self.password = "secret"
+        self.user = User.objects.create_user(username="user",
+                                             email=self.original_email,
+                                             password=self.password)
+        self.client.login(username=self.user.username, password=self.password)
+
+    def test_activate_password(self):
+        new_email = "user@changed.example.org"
+        email_modification = UserEmailModification.objects.create(new_email=new_email,
+                                                                  user=self.user)
+        response = self.client.get(reverse("django_change_email_activate_new_email",
+                                           kwargs={"code": email_modification.security_code}))
+
+        self.assertEqual(200, response.status_code)
+        new_email = "user@changed.example.org"
+        email_modification = UserEmailModification.objects.create(new_email=new_email,
+                                                                  user=self.user)
+
+        if email_modification.security_code[-1] == 'a':
+            security_code = email_modification.security_code[:-1] + 'b'
+        else:
+            security_code = email_modification.security_code[:-1] + 'a'
+        response = self.client.get(reverse("django_change_email_activate_new_email",
+                                           kwargs={"code": security_code}))
+
+        self.assertEqual(404, response.status_code)

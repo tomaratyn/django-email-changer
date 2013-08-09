@@ -1,3 +1,4 @@
+from datetime import datetime
 from string import translate
 from uuid import uuid4
 
@@ -17,4 +18,8 @@ class UserEmailModification(models.Model):
     date_change_proposed = models.DateField(auto_now_add=True)
     date_change_accepted = models.DateField(blank=True, null=True)
 
+    def activate(self):
+        self.user.email = self.new_email
+        self.user.save()
+        self.date_change_accepted = datetime.utcnow()
 
