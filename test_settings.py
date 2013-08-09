@@ -24,4 +24,12 @@ ROOT_URLCONF = 'django_email_changer.urls'
 
 SECRET_KEY = 'django_email_changer'
 
+EMAIL_CHANGE_NOTIFICATION_SUBJECT = "Email Change Activation Request"
+
+EMAIL_CHANGE_NOTIFICATION_EMAIL_TEMPLATE = "django_email_changer/email_change_notification.html"
+
+EMAIL_CHANGE_NOTIFICATION_FROM = "from-no-reply@example.com"
+
+EMAIL_CHANGE_ACTIVATION_SUCCESS_URL = "/activated-success"
+
 EMAIL_CHANGE_SUCCESS_URL = "/test-success" #not real
