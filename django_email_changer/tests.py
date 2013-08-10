@@ -1,5 +1,4 @@
 from datetime import timedelta
-from django.conf import settings
 from django.utils.timezone import now
 from mock import patch, Mock
 
@@ -7,6 +6,7 @@ from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from django.test import TestCase
 
+from django_email_changer import settings
 from django_email_changer.forms import UserEmailModificationForm
 from django_email_changer.models import UserEmailModification
 from django_email_changer import urls as email_changer_urls

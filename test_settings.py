@@ -26,14 +26,3 @@ SECRET_KEY = 'django_email_changer'
 
 USE_TZ = True
 
-EMAIL_CHANGE_NOTIFICATION_SUBJECT = "Email Change Activation Request"
-
-EMAIL_CHANGE_NOTIFICATION_EMAIL_TEMPLATE = "django_email_changer/email_change_notification.html"
-
-EMAIL_CHANGE_NOTIFICATION_FROM = "from-no-reply@example.com"
-
-EMAIL_CHANGE_ACTIVATION_SUCCESS_URL = "/activated-success"
-
-EMAIL_CHANGE_SUCCESS_URL = "/test-success"
-
-CHANGE_EMAIL_CODE_EXPIRY_TIME = {"days": 3}

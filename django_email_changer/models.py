@@ -2,11 +2,11 @@ from datetime import timedelta
 from string import translate
 from uuid import uuid4
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.utils.timezone import now
 
+from django_email_changer import settings
 
 def create_security_code():
     return translate(str(uuid4()), None, "-")
