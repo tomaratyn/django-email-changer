@@ -1,9 +1,11 @@
 # Django Email Changer
 
-Django app to securely change a user's email. This app will email your user at the new email with an activation URL. Once they click the link in the email, the new email will be put into their profile.
+Django app to securely change a user's email. This app will email your user at the new email with an activation URL. Once they click the link in the email, the new email will be put into their user account.
 
 
 ## Settings
+
+Django Email Changer has some custom settings it looks for.
 
 ### `EMAIL_CHANGE_NOTIFICATION_SUBJECT`
 
@@ -24,3 +26,7 @@ When a user activates their email, we'll redirect to this URL.
 ### `EMAIL_CHANGE_SUCCESS_URL`
 
 After a successfully submitting a new email, the user is forwarded to this URL.
+
+### `CHANGE_EMAIL_CODE_EXPIRY_TIME`
+
+A dictionary of arguments for `datetime.timedelta`. If modification is more than `CHANGE_EMAIL_CODE_EXPIRY_TIME` days/hours/minutes/etc old then the modification will not be applied.

@@ -2,11 +2,11 @@ from threading import Thread
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.shortcuts import get_object_or_404, redirect
-from django.template.base import Template
+from django.http import Http404
+from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.views.generic import FormView
-from django.views.generic.base import View, TemplateView, RedirectView
+from django.views.generic.base import RedirectView
 
 from django_email_changer.forms import UserEmailModificationForm
 from django_email_changer.models import UserEmailModification
@@ -45,12 +45,13 @@ class CreateUserEmailModificationRequest(FormView):
 
 class ActivateUserEmailModification(RedirectView):
 
-    template_name = "django_email_changer/activate_new_email.html"
     http_method_names = ['get', ]
     permanent = False
     url = settings.EMAIL_CHANGE_ACTIVATION_SUCCESS_URL
 
     def get(self, request, code, *args, **kwargs):
-        uem = get_object_or_404(UserEmailModification, security_code=code, user=request.user)
-        uem.activate()
-        return super(ActivateUserEmailModification, self).get(request, *args, **kwargs)
+        uem = get_object_or_404(UserEmailModification, security_code__exact=code, user__exact=request.user)
+        if uem.activate():
+            return super(ActivateUserEmailModification, self).get(request, *args, **kwargs)
+        else:
+            raise Http404()
