@@ -1,3 +1,8 @@
+# Copyright 2013 Tom Aratyn <tom@aratyn.name>
+#
+# This program is licensed under the MIT license (see LICENSE or http://opensource.org/licenses/MIT)
+#
+
 from threading import Thread
 
 from django.core.mail import send_mail
