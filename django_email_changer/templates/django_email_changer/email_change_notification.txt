@@ -1,0 +1,21 @@
+{% comment %}
+Copyright 2013 Tom Aratyn <tom@aratyn.name>
+
+This program is licensed under the MIT license (see LICENSE or http://opensource.org/licenses/MIT)
+
+{% endcomment %}
+
+Hello {{ email_modification.user.first_name }},
+
+To activate your new email address just go to this link:
+
+{% comment %}
+    Add the domain to the below block then uncomment it to
+    have emails send an activation URL.
+{% endcomment %}
+{% comment %}
+{% endcomment %}
+    {{ email_modification.security_code }}
+{% comment %}
+{% endcomment %}
+
