@@ -1,3 +1,8 @@
+# Copyright 2013 Tom Aratyn <tom@aratyn.name>
+#
+# This program is licensed under the MIT license (see LICENSE or http://opensource.org/licenses/MIT)
+#
+
 from django import forms
 from django.forms.models import ModelForm
 

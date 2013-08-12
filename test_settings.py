@@ -24,4 +24,5 @@ ROOT_URLCONF = 'django_email_changer.urls'
 
 SECRET_KEY = 'django_email_changer'
 
-EMAIL_CHANGE_SUCCESS_URL = "/test-success" #not real
+USE_TZ = True
+
