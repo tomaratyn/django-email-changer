@@ -12,7 +12,6 @@ from django.template.loader import render_to_string
 from django.views.generic import FormView
 from django.views.generic.base import RedirectView
 
-
 from django_email_changer import settings
 from django_email_changer.forms import UserEmailModificationForm
 from django_email_changer.models import UserEmailModification

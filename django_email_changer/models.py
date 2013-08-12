@@ -13,6 +13,7 @@ from django.utils.timezone import now
 
 from django_email_changer import settings
 
+
 def create_security_code():
     return translate(str(uuid4()), None, "-")
 
