@@ -3,7 +3,7 @@
 from distutils.core import setup
 
 setup(name="django-email-changer",
-      version="0.1.0",
+      version="0.1.1",
       description="A Django App to let users securely change the email associated with their account.",
       author="Tom Aratyn",
       author_email="tom@aratyn.name",
@@ -11,6 +11,7 @@ setup(name="django-email-changer",
       license="MIT",
       packages=['django_email_changer', ],
       install_requires=["Django<1.5", ],
+      tests_require=["Django<1.5", "mock", ],
       classifiers=[
           "Development Status :: 4 - Beta",
           "Intended Audience :: Developers",
