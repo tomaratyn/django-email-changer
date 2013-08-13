@@ -1,0 +1,12 @@
+{% comment %}
+Copyright 2013 Tom Aratyn <tom@aratyn.name>
+
+This program is licensed under the MIT license (see LICENSE or http://opensource.org/licenses/MIT)
+
+{% endcomment %}
+
+<form method="post">
+    <input type="hidden" name="csrfmiddlewaretoken" value="{{  csrf_token }}"/>
+    {{ form.as_ul }}
+    <input type="submit">
+</form>
