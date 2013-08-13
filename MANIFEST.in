@@ -1,0 +1,3 @@
+include README.md
+include django_email_changer/templates/django_email_changer/*.html
+include django_email_changer/templates/django_email_changer/*.txt
