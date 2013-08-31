@@ -31,10 +31,11 @@ class UserEmailModification(models.Model):
         returns true if we activate the new email, false otherwise.
         """
         expiry_datetime = now() - timedelta(**settings.CHANGE_EMAIL_CODE_EXPIRY_TIME)
-        if expiry_datetime < self.date_change_proposed:
+        if expiry_datetime < self.date_change_proposed and self.date_change_accepted is None:
             self.user.email = self.new_email
             self.user.save()
             self.date_change_accepted = now()
+            self.save()
             return True
         return False
 

@@ -118,25 +118,21 @@ class TestNewEmailActivationView(TestCase):
                                              email=self.original_email,
                                              password=self.password)
         self.client.login(username=self.user.username, password=self.password)
+        self.new_email = "user@changed.example.org"
+        self.uem = UserEmailModification.objects.create(new_email=self.new_email, user=self.user)
 
     def test_activate_password(self):
-        new_email = "user@changed.example.org"
-        email_modification = UserEmailModification.objects.create(new_email=new_email,
-                                                                  user=self.user)
         response = self.client.get(reverse("django_change_email_activate_new_email",
-                                           kwargs={"code": email_modification.security_code}))
+                                           kwargs={"code": self.uem.security_code}))
         self.assertEqual(200, response.status_code)
         self.user = refresh(self.user)
-        self.assertEqual(new_email, self.user.email)
+        self.assertEqual(self.new_email, self.user.email)
 
     def test_invalid_code_fails(self):
-        new_email = "user@changed.example.org"
-        email_modification = UserEmailModification.objects.create(new_email=new_email,
-                                                                  user=self.user)
-        if email_modification.security_code[-1] == 'a':
-            security_code = email_modification.security_code[:-1] + 'b'
+        if self.uem.security_code[-1] == 'a':
+            security_code = self.uem.security_code[:-1] + 'b'
         else:
-            security_code = email_modification.security_code[:-1] + 'a'
+            security_code = self.uem.security_code[:-1] + 'a'
         response = self.client.get(reverse("django_change_email_activate_new_email",
                                            kwargs={"code": security_code}))
         self.assertEqual(404, response.status_code)
@@ -144,16 +140,22 @@ class TestNewEmailActivationView(TestCase):
         self.assertEqual(self.original_email, self.user.email)
 
     def test_expired_code_fails(self):
-        new_email = "user@changed.example.org"
-        expired_email_modification_request = UserEmailModification.objects.create(new_email=new_email,
-                                                                                  user=self.user)
-        expired_email_modification_request.date_change_proposed = now() - \
-                                                           timedelta(**settings.CHANGE_EMAIL_CODE_EXPIRY_TIME) - \
-                                                           timedelta(days=1)
-        expired_email_modification_request.save()
-        security_code = expired_email_modification_request.security_code
+        self.uem.date_change_proposed = now() - timedelta(**settings.CHANGE_EMAIL_CODE_EXPIRY_TIME) - timedelta(days=1)
+        self.uem.save()
+        security_code = self.uem.security_code
         response = self.client.get(reverse("django_change_email_activate_new_email",
                                            kwargs={"code": security_code}))
         self.user = refresh(self.user)
         self.assertEqual(self.original_email, self.user.email)
         self.assertEqual(404, response.status_code)
+
+    def test_used_code_fails(self):
+        self.assertTrue(self.uem.activate())
+        self.user.email = self.original_email
+        self.user.save()
+        security_code = self.uem.security_code
+        response = self.client.get(reverse("django_change_email_activate_new_email",
+                                           kwargs={"code": security_code}))
+        self.user = refresh(self.user)
+        self.assertEqual(404, response.status_code)
+        self.assertEqual(self.original_email, self.user.email)
