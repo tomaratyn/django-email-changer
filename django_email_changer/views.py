@@ -11,6 +11,7 @@ from django.core.urlresolvers import reverse
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
+from django.utils.decorators import method_decorator
 from django.views.generic import FormView, RedirectView, TemplateView
 
 from django_email_changer import settings
@@ -65,3 +66,10 @@ class ActivateUserEmailModification(TemplateView):
         else:
             raise Http404()
 
+
+class ActivationEmailSentSuccessView(TemplateView):
+    template_name = settings.EMAIL_CHANGE_NOTIFICATION_SENT_TEMPLATE
+
+    @method_decorator(login_required)
+    def dispatch(self, *args, **kwargs):
+        return super(ActivationEmailSentSuccessView, self).dispatch(*args, **kwargs)
