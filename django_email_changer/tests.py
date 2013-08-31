@@ -125,7 +125,7 @@ class TestNewEmailActivationView(TestCase):
                                                                   user=self.user)
         response = self.client.get(reverse("django_change_email_activate_new_email",
                                            kwargs={"code": email_modification.security_code}))
-        self.assertEqual(302, response.status_code)
+        self.assertEqual(200, response.status_code)
         self.user = refresh(self.user)
         self.assertEqual(new_email, self.user.email)
 
