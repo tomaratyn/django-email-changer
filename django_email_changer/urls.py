@@ -6,7 +6,8 @@
 from django.conf.urls import patterns, url
 from django.contrib.auth.decorators import login_required
 
-from django_email_changer.views import CreateUserEmailModificationRequest, ActivateUserEmailModification
+from django_email_changer.views import CreateUserEmailModificationRequest, ActivateUserEmailModification, \
+    ActivationEmailSentSuccessView
 
 urlpatterns = patterns('',
                        url(r'^change_email$',
@@ -14,5 +15,8 @@ urlpatterns = patterns('',
                            name="django_email_changer_change_view"),
                        url(r'activate_email/(?P<code>[^/]+)',
                            login_required(ActivateUserEmailModification.as_view()),
-                           name="django_change_email_activate_new_email")
+                           name="django_change_email_activate_new_email"),
+                       url(r'^activiation_email_sent$',
+                           login_required(ActivationEmailSentSuccessView.as_view()),
+                           name="django_change_email_sent_activation_email"),
                        )

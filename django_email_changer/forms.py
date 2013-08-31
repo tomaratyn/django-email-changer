@@ -14,7 +14,7 @@ class UserEmailModificationForm(ModelForm):
         model = UserEmailModification
         fields = ("new_email", )
 
-    confirmed_email = forms.EmailField(required=True, label="Confirmed Email")
+    confirmed_email = forms.EmailField(required=True, label="Confirm Email")
     password = forms.CharField(required=True, label="Your Password", widget=forms.PasswordInput)
 
     def clean(self):
